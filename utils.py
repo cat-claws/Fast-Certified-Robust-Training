@@ -111,6 +111,8 @@ def prepare_model(args, logger, config):
 
     if config['data'] == 'MNIST':
         input_shape = (1, 28, 28)
+    elif config['data'] == 'SVHN':
+        input_shape = (3, 32, 32)
     elif config['data'] == 'CIFAR':
         input_shape = (3, 32, 32)
     elif config['data'] == 'tinyimagenet':
