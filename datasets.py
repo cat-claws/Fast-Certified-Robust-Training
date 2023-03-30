@@ -38,6 +38,24 @@ class CIFAR10(datasets.CIFAR10):
         else:
             return img, target
 
+class SVHN(datasets.SVHN):
+     
+    def __init__(self, root, train=True, transform=None, target_transform=None,
+                 download=False, use_index=False):
+        if train == True:
+            split = 'train'
+        else:
+            split = 'test'          
+        super().__init__(root, split, transform, target_transform, download) 
+        self.use_index = use_index
+        
+    def __getitem__(self, index):
+        img, target = super().__getitem__(index)         
+        if self.use_index:
+            return img, target, index
+        else:
+            return img, target
+
 def load_data(args, data, batch_size, test_batch_size, use_index=False, aug=True):
     if data == 'MNIST':
         """Fix 403 Forbidden error in downloading MNIST
@@ -51,6 +69,26 @@ def load_data(args, data, batch_size, test_batch_size, use_index=False, aug=True
         mean, std = torch.tensor([0.0]), torch.tensor([1.0])
         train_data = MNIST('./data', train=True, download=True, transform=transforms.ToTensor(), use_index=use_index)
         test_data = MNIST('./data', train=False, download=True, transform=transforms.ToTensor(), use_index=use_index)
+    elif data == 'SVHN':
+        mean = torch.tensor(cifar10_mean)
+        std = torch.tensor([0.2, 0.2, 0.2] if args.lip or args.global_lip or 'lip' in args.model else cifar10_std)
+        dummy_input = torch.randn(2, 3, 32, 32)
+        normalize = transforms.Normalize(mean = mean, std = std)
+        if aug:
+            transform = transforms.Compose([
+                    transforms.RandomHorizontalFlip(),
+                    transforms.RandomCrop(32, 2, padding_mode='edge'),
+                    transforms.ToTensor(),
+                    normalize])
+        else:
+            # No random cropping
+            transform = transforms.Compose([transforms.RandomHorizontalFlip(), transforms.ToTensor(), normalize])
+        transform_test = transforms.Compose([transforms.ToTensor(), normalize])
+
+        train_data = SVHN('./data', train=True, download=True, 
+            transform=transform, use_index=use_index)
+        test_data = SVHN('./data', train=False, download=True, 
+                transform=transform_test, use_index=use_index)
     elif data == 'CIFAR':
         mean = torch.tensor(cifar10_mean)
         std = torch.tensor([0.2, 0.2, 0.2] if args.lip or args.global_lip or 'lip' in args.model else cifar10_std)
