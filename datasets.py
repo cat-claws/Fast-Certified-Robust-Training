@@ -122,6 +122,26 @@ def load_data(args, data, batch_size, test_batch_size, use_index=False, aug=True
             transform=transform, use_index=use_index)
         test_data = CIFAR10('./data', train=False, download=True, 
                 transform=transform_test, use_index=use_index)
+    elif data == 'CIFAR100':
+        mean = torch.tensor(cifar10_mean)
+        std = torch.tensor([0.2, 0.2, 0.2] if args.lip or args.global_lip or 'lip' in args.model else cifar10_std)
+        dummy_input = torch.randn(2, 3, 32, 32)
+        normalize = transforms.Normalize(mean = mean, std = std)
+        if aug:
+            transform = transforms.Compose([
+                    transforms.RandomHorizontalFlip(),
+                    transforms.RandomCrop(32, 2, padding_mode='edge'),
+                    transforms.ToTensor(),
+                    normalize])
+        else:
+            # No random cropping
+            transform = transforms.Compose([transforms.RandomHorizontalFlip(), transforms.ToTensor(), normalize])
+        transform_test = transforms.Compose([transforms.ToTensor(), normalize])
+
+        train_data = CIFAR100('./data', train=True, download=True, 
+            transform=transform, use_index=use_index)
+        test_data = CIFAR100('./data', train=False, download=True, 
+                transform=transform_test, use_index=use_index)
     elif data == "tinyimagenet":
         mean = torch.tensor([0.4802, 0.4481, 0.3975])
         std = torch.tensor([0.22, 0.22, 0.22] if args.lip else [0.2302, 0.2265, 0.2262])
