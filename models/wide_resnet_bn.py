@@ -142,6 +142,11 @@ def wide_resnet_8(in_ch=3, in_dim=32):
         dense=True, pool=False, in_ch=in_ch, in_dim=in_dim)
     return model   
 
+def wide_resnet_8_100(in_ch=3, in_dim=32):
+    model = ResNet(BasicBlock, [1,1,1], num_classes=100, widen_factor=8, 
+        dense=True, pool=False, in_ch=in_ch, in_dim=in_dim)
+    return model   
+
 def wide_resnet_12(in_ch=3, in_dim=32):
     model = ResNet(BasicBlock, [1,1,1], num_classes=10, widen_factor=12, dense=True, pool=False)
     return model      
