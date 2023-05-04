@@ -37,6 +37,19 @@ class CIFAR10(datasets.CIFAR10):
             return img, target, index
         else:
             return img, target
+        
+class CIFAR100(datasets.CIFAR100):
+    def __init__(self, root, train=True, transform=None, target_transform=None,
+                 download=False, use_index=False):
+        super().__init__(root, train, transform, target_transform, download) 
+        self.use_index = use_index
+    
+    def __getitem__(self, index):
+        img, target = super().__getitem__(index)         
+        if self.use_index:
+            return img, target, index
+        else:
+            return img, target
 
 class SVHN(datasets.SVHN):
      
