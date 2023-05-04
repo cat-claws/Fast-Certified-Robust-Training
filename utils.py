@@ -115,6 +115,8 @@ def prepare_model(args, logger, config):
         input_shape = (3, 32, 32)
     elif config['data'] == 'CIFAR':
         input_shape = (3, 32, 32)
+    elif config['data'] == 'CIFAR100':
+        input_shape = (3, 32, 32)
     elif config['data'] == 'tinyimagenet':
         input_shape = (3, 64, 64)
     else:
