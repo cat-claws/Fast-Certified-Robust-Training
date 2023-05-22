@@ -5,6 +5,10 @@ from torch.nn.parameter import Parameter
 from .utils import Flatten
 import math
 import pdb
+
+import pytorchcv.model_provider
+def cresnet(in_ch=3, in_dim=32):
+    return pytorchcv.model_provider.get_model(f"resnet20_cifar10", pretrained=False)
  
 def cnn_7layer(in_ch=3, in_dim=32, width=64, linear_size=512):
     model = nn.Sequential(
