@@ -81,6 +81,9 @@ def cnn_7layer_bn2(in_ch=3, in_dim=32, width=64, linear_size=512, num_class=10):
 def cnn(in_ch=3, in_dim=32):
     return cnn_7layer_bn2(in_ch, in_dim)
 
+def cnn100(in_ch=3, in_dim=32):
+    return cnn_7layer_bn2(in_ch, in_dim, num_class=100)
+
 def cnn_wide(in_ch=3, in_dim=32):
     return cnn_7layer_bn2(in_ch, in_dim, width=128)
 
