@@ -9,6 +9,12 @@ import pdb
 import pytorchcv.model_provider
 def cresnet(in_ch=3, in_dim=32):
     return pytorchcv.model_provider.get_model(f"resnet20_cifar10", pretrained=False)
+
+def mobilenet_v2(in_ch=3, in_dim=32):
+    return torch.hub.load('pytorch/vision:v0.10.0', 'mobilenet_v2', num_classes = 10)
+
+def mobilenet_v3_small(in_ch=3, in_dim=32):
+    return torch.hub.load('pytorch/vision:v0.10.0', 'mobilenet_v3_small', num_classes = 10)
  
 def cnn_7layer(in_ch=3, in_dim=32, width=64, linear_size=512):
     model = nn.Sequential(
