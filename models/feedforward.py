@@ -2,19 +2,58 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.parameter import Parameter
+import torchvision
 from .utils import Flatten
 import math
 import pdb
 
 import pytorchcv.model_provider
+import torchvision.models.resnet as resnet
+
+class ConvNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.fc1 = nn.Linear(16 * 5 * 5, 1280)
+        self.fc2 = nn.Linear(1280, 84)
+        self.fc3 = nn.Linear(84, 10)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = torch.flatten(x, 1) # flatten all dimensions except batch
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
+def convnet(in_ch=3, in_dim=32):
+    return ConvNet()
+
+import pytorchcv.models.resnet_cifar
+
+def cresnet8(in_ch=3, in_dim=32):
+    return pytorchcv.models.resnet_cifar.get_resnet_cifar(num_classes=10, blocks=8, bottleneck=False)
+
+def cresnet14(in_ch=3, in_dim=32):
+    return pytorchcv.models.resnet_cifar.get_resnet_cifar(num_classes=10, blocks=14, bottleneck=False)
+
+def cresnet26(in_ch=3, in_dim=32):
+    return pytorchcv.models.resnet_cifar.get_resnet_cifar(num_classes=10, blocks=26, bottleneck=False)
+
 def cresnet(in_ch=3, in_dim=32):
     return pytorchcv.model_provider.get_model(f"resnet20_cifar10", pretrained=False)
 
 def mnasnet0_5(in_ch=3, in_dim=32):
     return torch.hub.load('pytorch/vision:v0.10.0', 'mnasnet0_5', num_classes = 10)
 
-def mobilenet_v3_small(in_ch=3, in_dim=32):
-    return torch.hub.load('pytorch/vision:v0.10.0', 'mobilenet_v3_small', num_classes = 10)
+def wideresnet(in_ch=3, in_dim=32):
+    return resnet.ResNet(resnet.Bottleneck, [1, 1, 1, 1], num_classes=10)
+
+def resnet10(in_ch=3, in_dim=32):
+    return resnet.ResNet(resnet.BasicBlock, [1, 1, 1, 1], num_classes=10)
  
 def cnn_7layer(in_ch=3, in_dim=32, width=64, linear_size=512):
     model = nn.Sequential(
