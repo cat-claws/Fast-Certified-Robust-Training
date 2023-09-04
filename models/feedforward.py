@@ -33,6 +33,10 @@ def convnet(in_ch=3, in_dim=32):
     return ConvNet()
 
 import pytorchcv.models.resnet_cifar
+import pytorchcv.models.wrn_cifar
+
+def wresnet10(in_ch=3, in_dim=32):
+    return pytorchcv.models.wrn_cifar.get_wrn_cifar(num_classes=10, blocks=10, width_factor=4)#, model_name="wrn16_10_cifar10")
 
 def cresnet8(in_ch=3, in_dim=32):
     return pytorchcv.models.resnet_cifar.get_resnet_cifar(num_classes=10, blocks=8, bottleneck=False)
